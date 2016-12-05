@@ -36,8 +36,9 @@ public class Pigeon {
 		this.connection.start();
 	}
 
-	public void kill() throws InterruptedException {
+	public void kill() throws InterruptedException, IOException {
 		this.connection.active = false;
+		this.server.close();
 		this.connection.join();
 	}
 
@@ -52,9 +53,7 @@ public class Pigeon {
 		public void run() {
 			while (active) {
 				try {
-					System.out.println("Tentative de connection...");
 					Socket sock = this.connect();
-					System.out.println("OK c'est parti!");
 
 					MessageReader mr = new MessageReader(sock.getInputStream(), onRcv);
 					MessageWriter mw = new MessageWriter(sock.getOutputStream());
@@ -72,7 +71,6 @@ public class Pigeon {
 					mr.done();
 					sock.close();
 				} catch (Exception e) {
-					System.err.println(e);
 					active = false;
 				}
 
@@ -83,7 +81,6 @@ public class Pigeon {
 			try {
 				return new Socket(other, dist_port);
 			} catch (IOException ioe) {
-				System.out.println("Pas de niche chez le correspondant, on attend au chaud ici.");
 				return server.accept();
 			}
 		}

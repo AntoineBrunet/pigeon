@@ -65,13 +65,18 @@ public class GUI extends Application {
 		GridPane.setConstraints(submit, 1, 1);
 		grid.getChildren().add(submit);
 
-		submit.setOnAction((ActionEvent e) -> {
+		EventHandler<ActionEvent> sendMsg = (ActionEvent e) -> {
 			String msg = message.getText();
 			if (msg != null && !msg.isEmpty()) {
-				pigeon.send(new Message(msg));
+				Message mess = new Message(msg);
+				pigeon.send(mess);
+				receive(mess);
 			}
 			message.clear();
-		});
+		};
+
+		submit.setOnAction(sendMsg);
+		message.setOnAction(sendMsg);
 	
 		//Defining TEXTAREA
 		ScrollPane board = new ScrollPane();
